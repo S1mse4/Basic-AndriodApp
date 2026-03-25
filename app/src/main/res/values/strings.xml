@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Basic Android App</string>
+    <string name="app_name">Stock Market Game</string>
     <string name="hello_world">Hello World!</string>
+    <string name="market">Market</string>
+    <string name="portfolio">Portfolio</string>
+    <string name="buy">BUY</string>
+    <string name="sell">SELL</string>
+    <string name="no_holdings">No holdings yet.\nGo to Market and buy some shares!</string>
 </resources>
+

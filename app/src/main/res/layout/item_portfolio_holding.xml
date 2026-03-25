@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/bg_card"
+    android:padding="14dp"
+    android:layout_marginBottom="2dp">
+
+    <!-- Left: Symbol and Name -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/tvHoldingSymbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APPL"
+            android:textColor="@color/text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvHoldingName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="AppleCore Technologies"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvShares"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="10 shares"
+            android:textColor="@color/accent_blue"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+    <!-- Right: Value, Avg, PnL -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <TextView
+            android:id="@+id/tvHoldingValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="$1,825.00"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvAvgPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Avg: $180.00"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/tvPnL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+$25.00 (+1.38%)"
+            android:textColor="@color/stock_green"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
+    </LinearLayout>
+
+</LinearLayout>
