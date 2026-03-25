@@ -75,10 +75,25 @@ class StockMarketEngine {
             }
         }
 
+        // Apply bank deposit interest
+        if (GameState.bankDeposit > 0) {
+            GameState.bankDeposit *= (1.0 + GameState.DEPOSIT_INTEREST_RATE)
+        }
+        // Apply debt interest (debt grows over time)
+        if (GameState.bankDebt > 0) {
+            GameState.bankDebt *= (1.0 + GameState.DEBT_INTEREST_RATE)
+        }
+
         // Record portfolio value snapshot for Player Data history (capped at 500 entries)
         GameState.portfolioValueHistory.add(GameState.totalPortfolioValue())
         if (GameState.portfolioValueHistory.size > 500) {
             GameState.portfolioValueHistory.removeAt(0)
+        }
+
+        // Track highest portfolio value ever recorded
+        val currentTotal = GameState.totalPortfolioValue()
+        if (currentTotal > GameState.highestPortfolioValue) {
+            GameState.highestPortfolioValue = currentTotal
         }
 
         // Track biggest single-share profit (unrealized, without selling)
