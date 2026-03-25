@@ -74,21 +74,52 @@
     </LinearLayout>
 
     <!-- Market Section -->
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/marketSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="120dp"
-        android:layout_marginBottom="56dp">
+        android:layout_marginBottom="56dp"
+        android:orientation="vertical">
+
+        <!-- Sort bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/bg_card"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sort:"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:layout_marginEnd="8dp" />
+
+            <Spinner
+                android:id="@+id/spinnerSort"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@color/bg_surface"
+                android:popupBackground="@color/bg_surface" />
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMarket"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:clipToPadding="false"
             android:paddingTop="4dp"
             android:paddingBottom="8dp" />
-    </FrameLayout>
+    </LinearLayout>
 
     <!-- Portfolio Section -->
     <LinearLayout
@@ -185,7 +216,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ALL-TIME PORTFOLIO VALUES (sorted)"
+                    android:text="HIGHEST PORTFOLIO VALUE"
                     android:textColor="@color/text_secondary"
                     android:textSize="11sp"
                     android:textAllCaps="true"
@@ -197,9 +228,187 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="No data yet — values are recorded each update."
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
                     android:lineSpacingExtra="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All-time highest total portfolio value recorded"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Bank Section -->
+    <ScrollView
+        android:id="@+id/bankSection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="56dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Deposit Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SAVINGS DEPOSIT"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvBankDeposit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textColor="@color/stock_green"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Earns 0.1% interest per market tick"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="12dp" />
+
+                <EditText
+                    android:id="@+id/etBankAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Amount"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@color/bg_surface"
+                    android:padding="10dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnDeposit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="DEPOSIT"
+                        android:textColor="@color/text_primary"
+                        android:backgroundTint="@color/stock_green"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btnWithdraw"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="WITHDRAW"
+                        android:textColor="@color/text_primary"
+                        android:backgroundTint="@color/accent_blue"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Debt Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_card"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BANK DEBT"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvBankDebt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="$0.00"
+                    android:textColor="@color/stock_red"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Accrues 0.2% interest per market tick"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="12dp" />
+
+                <EditText
+                    android:id="@+id/etDebtAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Amount"
+                    android:inputType="numberDecimal"
+                    android:textColor="@color/text_primary"
+                    android:textColorHint="@color/text_secondary"
+                    android:background="@color/bg_surface"
+                    android:padding="10dp"
+                    android:layout_marginBottom="8dp" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnBorrow"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BORROW"
+                        android:textColor="@color/text_primary"
+                        android:backgroundTint="@color/stock_red"
+                        android:layout_marginEnd="4dp" />
+
+                    <Button
+                        android:id="@+id/btnRepay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="REPAY"
+                        android:textColor="@color/text_primary"
+                        android:backgroundTint="@color/accent_blue"
+                        android:layout_marginStart="4dp" />
+                </LinearLayout>
             </LinearLayout>
 
         </LinearLayout>

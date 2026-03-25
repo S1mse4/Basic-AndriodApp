@@ -2,13 +2,22 @@ package com.example.basicandroidapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.basicandroidapp.engine.StockMarketEngine
+import com.example.basicandroidapp.model.BankResult
 import com.example.basicandroidapp.model.GameState
 import com.example.basicandroidapp.ui.PortfolioAdapter
+import com.example.basicandroidapp.ui.SortMode
 import com.example.basicandroidapp.ui.StockAdapter
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
@@ -22,12 +31,24 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var rvMarket: RecyclerView
     private lateinit var rvPortfolio: RecyclerView
     private lateinit var bottomNav: BottomNavigationView
-    private lateinit var marketSection: android.view.View
-    private lateinit var portfolioSection: android.view.View
-    private lateinit var playerSection: android.view.View
+    private lateinit var marketSection: View
+    private lateinit var portfolioSection: View
+    private lateinit var playerSection: View
+    private lateinit var bankSection: View
     private lateinit var tvEmptyPortfolio: TextView
     private lateinit var tvBiggestProfit: TextView
     private lateinit var tvPortfolioHistory: TextView
+    private lateinit var spinnerSort: Spinner
+
+    // Bank views
+    private lateinit var tvBankDeposit: TextView
+    private lateinit var tvBankDebt: TextView
+    private lateinit var etBankAmount: EditText
+    private lateinit var etDebtAmount: EditText
+    private lateinit var btnDeposit: Button
+    private lateinit var btnWithdraw: Button
+    private lateinit var btnBorrow: Button
+    private lateinit var btnRepay: Button
 
     private lateinit var stockAdapter: StockAdapter
     private lateinit var portfolioAdapter: PortfolioAdapter
@@ -49,9 +70,20 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         marketSection = findViewById(R.id.marketSection)
         portfolioSection = findViewById(R.id.portfolioSection)
         playerSection = findViewById(R.id.playerSection)
+        bankSection = findViewById(R.id.bankSection)
         tvEmptyPortfolio = findViewById(R.id.tvEmptyPortfolio)
         tvBiggestProfit = findViewById(R.id.tvBiggestProfit)
         tvPortfolioHistory = findViewById(R.id.tvPortfolioHistory)
+        spinnerSort = findViewById(R.id.spinnerSort)
+
+        tvBankDeposit = findViewById(R.id.tvBankDeposit)
+        tvBankDebt = findViewById(R.id.tvBankDebt)
+        etBankAmount = findViewById(R.id.etBankAmount)
+        etDebtAmount = findViewById(R.id.etDebtAmount)
+        btnDeposit = findViewById(R.id.btnDeposit)
+        btnWithdraw = findViewById(R.id.btnWithdraw)
+        btnBorrow = findViewById(R.id.btnBorrow)
+        btnRepay = findViewById(R.id.btnRepay)
 
         stockAdapter = StockAdapter(GameState.stocks) { stock ->
             val intent = Intent(this, StockDetailActivity::class.java)
@@ -71,25 +103,39 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         rvPortfolio.layoutManager = LinearLayoutManager(this)
         rvPortfolio.adapter = portfolioAdapter
 
+        setupSortSpinner()
+        setupBankButtons()
+
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_market -> {
-                    marketSection.visibility = android.view.View.VISIBLE
-                    portfolioSection.visibility = android.view.View.GONE
-                    playerSection.visibility = android.view.View.GONE
+                    marketSection.visibility = View.VISIBLE
+                    portfolioSection.visibility = View.GONE
+                    bankSection.visibility = View.GONE
+                    playerSection.visibility = View.GONE
                     true
                 }
                 R.id.nav_portfolio -> {
-                    marketSection.visibility = android.view.View.GONE
-                    portfolioSection.visibility = android.view.View.VISIBLE
-                    playerSection.visibility = android.view.View.GONE
+                    marketSection.visibility = View.GONE
+                    portfolioSection.visibility = View.VISIBLE
+                    bankSection.visibility = View.GONE
+                    playerSection.visibility = View.GONE
                     refreshPortfolioList()
                     true
                 }
+                R.id.nav_bank -> {
+                    marketSection.visibility = View.GONE
+                    portfolioSection.visibility = View.GONE
+                    bankSection.visibility = View.VISIBLE
+                    playerSection.visibility = View.GONE
+                    refreshBankData()
+                    true
+                }
                 R.id.nav_player -> {
-                    marketSection.visibility = android.view.View.GONE
-                    portfolioSection.visibility = android.view.View.GONE
-                    playerSection.visibility = android.view.View.VISIBLE
+                    marketSection.visibility = View.GONE
+                    portfolioSection.visibility = View.GONE
+                    bankSection.visibility = View.GONE
+                    playerSection.visibility = View.VISIBLE
                     refreshPlayerData()
                     true
                 }
@@ -101,11 +147,104 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         engine.start()
     }
 
+    private fun setupSortSpinner() {
+        val sortLabels = listOf("Price: Low → High", "Price: High → Low", "My Holdings First")
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortLabels)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerSort.adapter = adapter
+
+        spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
+                val mode = when (position) {
+                    0 -> SortMode.PRICE_LOW_HIGH
+                    1 -> SortMode.PRICE_HIGH_LOW
+                    else -> SortMode.OWNED_FIRST
+                }
+                stockAdapter.setSortMode(mode)
+            }
+            override fun onNothingSelected(parent: AdapterView<*>) {}
+        }
+    }
+
+    private fun setupBankButtons() {
+        btnDeposit.setOnClickListener {
+            val amount = etBankAmount.text.toString().toDoubleOrNull()
+            if (amount == null || amount <= 0) {
+                Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.depositToBank(amount)) {
+                BankResult.SUCCESS -> {
+                    etBankAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Deposited $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
+                }
+                BankResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Not enough cash!", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnWithdraw.setOnClickListener {
+            val amount = etBankAmount.text.toString().toDoubleOrNull()
+            if (amount == null || amount <= 0) {
+                Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.withdrawFromBank(amount)) {
+                BankResult.SUCCESS -> {
+                    etBankAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Withdrew $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
+                }
+                BankResult.INSUFFICIENT_DEPOSIT -> Toast.makeText(this, "Not enough in deposit!", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnBorrow.setOnClickListener {
+            val amount = etDebtAmount.text.toString().toDoubleOrNull()
+            if (amount == null || amount <= 0) {
+                Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.borrowFromBank(amount)) {
+                BankResult.SUCCESS -> {
+                    etDebtAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Borrowed $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
+                }
+                else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnRepay.setOnClickListener {
+            val amount = etDebtAmount.text.toString().toDoubleOrNull()
+            if (amount == null || amount <= 0) {
+                Toast.makeText(this, "Enter a valid amount", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val actualRepaid = minOf(amount, GameState.bankDebt)
+            when (GameState.repayDebt(amount)) {
+                BankResult.SUCCESS -> {
+                    etDebtAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Repaid $${"%.2f".format(actualRepaid)}", Toast.LENGTH_SHORT).show()
+                }
+                BankResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Not enough cash!", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         engine.addListener(this)
         updateHeader()
-        stockAdapter.notifyDataSetChanged()
+        stockAdapter.notifyPricesChanged()
         refreshPortfolioList()
     }
 
@@ -116,11 +255,14 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
     override fun onPricesUpdated() {
         updateHeader()
-        stockAdapter.notifyDataSetChanged()
-        if (portfolioSection.visibility == android.view.View.VISIBLE) {
+        stockAdapter.notifyPricesChanged()
+        if (portfolioSection.visibility == View.VISIBLE) {
             refreshPortfolioList()
         }
-        if (playerSection.visibility == android.view.View.VISIBLE) {
+        if (bankSection.visibility == View.VISIBLE) {
+            refreshBankData()
+        }
+        if (playerSection.visibility == View.VISIBLE) {
             refreshPlayerData()
         }
     }
@@ -142,7 +284,12 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private fun refreshPortfolioList() {
         val holdings = GameState.stocks.filter { it.sharesOwned > 0 }
         portfolioAdapter.updateHoldings(holdings)
-        tvEmptyPortfolio.visibility = if (holdings.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+        tvEmptyPortfolio.visibility = if (holdings.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun refreshBankData() {
+        tvBankDeposit.text = "$${"%.2f".format(GameState.bankDeposit)}"
+        tvBankDebt.text = "$${"%.2f".format(GameState.bankDebt)}"
     }
 
     private fun refreshPlayerData() {
@@ -151,14 +298,11 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         tvBiggestProfit.text = "$sign$${"%.2f".format(profit)}"
         tvBiggestProfit.setTextColor(getColor(if (profit >= 0) R.color.stock_green else R.color.stock_red))
 
-        val history = GameState.portfolioValueHistory
-        if (history.isEmpty()) {
+        val highest = GameState.highestPortfolioValue
+        if (GameState.portfolioValueHistory.isEmpty()) {
             tvPortfolioHistory.text = "No data yet — values are recorded each update."
         } else {
-            val sorted = history.sortedDescending()
-            tvPortfolioHistory.text = sorted
-                .mapIndexed { i, v -> "#${i + 1}  $${"%.2f".format(v)}" }
-                .joinToString("\n")
+            tvPortfolioHistory.text = "$${"%.2f".format(highest)}"
         }
     }
 

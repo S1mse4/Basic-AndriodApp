@@ -8,10 +8,43 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.basicandroidapp.R
 import com.example.basicandroidapp.model.Stock
 
+enum class SortMode { PRICE_LOW_HIGH, PRICE_HIGH_LOW, OWNED_FIRST }
+
 class StockAdapter(
-    private val stocks: List<Stock>,
+    private val allStocks: List<Stock>,
     private val onStockClick: (Stock) -> Unit
 ) : RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
+
+    private var sortMode: SortMode = SortMode.PRICE_LOW_HIGH
+    private val displayedStocks: MutableList<Stock> = mutableListOf()
+
+    init {
+        applySorting()
+    }
+
+    fun setSortMode(mode: SortMode) {
+        sortMode = mode
+        applySorting()
+    }
+
+    /** Re-applies the current sort (call after price updates). */
+    fun notifyPricesChanged() {
+        applySorting()
+    }
+
+    private fun applySorting() {
+        displayedStocks.clear()
+        displayedStocks.addAll(
+            when (sortMode) {
+                SortMode.PRICE_LOW_HIGH -> allStocks.sortedBy { it.currentPrice }
+                SortMode.PRICE_HIGH_LOW -> allStocks.sortedByDescending { it.currentPrice }
+                SortMode.OWNED_FIRST -> allStocks.sortedWith(
+                    compareByDescending<Stock> { it.sharesOwned > 0 }.thenBy { it.symbol }
+                )
+            }
+        )
+        notifyDataSetChanged()
+    }
 
     inner class StockViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val symbolText: TextView = itemView.findViewById(R.id.tvSymbol)
@@ -28,7 +61,7 @@ class StockAdapter(
     }
 
     override fun onBindViewHolder(holder: StockViewHolder, position: Int) {
-        val stock = stocks[position]
+        val stock = displayedStocks[position]
         val ctx = holder.itemView.context
 
         holder.symbolText.text = stock.symbol
@@ -51,5 +84,5 @@ class StockAdapter(
         holder.itemView.setOnClickListener { onStockClick(stock) }
     }
 
-    override fun getItemCount() = stocks.size
+    override fun getItemCount() = displayedStocks.size
 }
