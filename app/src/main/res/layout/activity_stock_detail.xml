@@ -226,6 +226,39 @@
                 android:textColor="@color/text_primary"
                 android:backgroundTint="@color/stock_green"
                 style="@style/Widget.MaterialComponents.Button" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/btnBuyAll"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="4dp"
+                    android:text="BUY ALL"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/stock_green"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                <Button
+                    android:id="@+id/btnSellAll"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="4dp"
+                    android:text="SELL ALL"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/stock_red"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

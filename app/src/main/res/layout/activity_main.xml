@@ -122,6 +122,89 @@
             android:paddingBottom="8dp" />
     </LinearLayout>
 
+    <!-- Player Data Section -->
+    <ScrollView
+        android:id="@+id/playerSection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="56dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Biggest Single-Share Profit Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_card"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="BEST SINGLE-SHARE PROFIT"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:id="@+id/tvBiggestProfit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="+$0.00"
+                    android:textColor="@color/stock_green"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="4dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All-time highest unrealized profit per share (without selling)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="12sp"
+                    android:layout_marginTop="4dp" />
+            </LinearLayout>
+
+            <!-- All-time Portfolio Values Card -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_card"
+                android:padding="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ALL-TIME PORTFOLIO VALUES (sorted)"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="11sp"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="8dp" />
+
+                <TextView
+                    android:id="@+id/tvPortfolioHistory"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="No data yet — values are recorded each update."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="13sp"
+                    android:lineSpacingExtra="4dp" />
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNav"

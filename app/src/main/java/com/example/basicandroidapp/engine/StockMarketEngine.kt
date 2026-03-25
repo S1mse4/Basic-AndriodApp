@@ -13,7 +13,7 @@ class StockMarketEngine {
     private var isRunning = false
 
     companion object {
-        const val UPDATE_INTERVAL_MS = 4000L
+        const val UPDATE_INTERVAL_MS = 8000L
         val instance: StockMarketEngine by lazy { StockMarketEngine() }
     }
 
@@ -74,6 +74,23 @@ class StockMarketEngine {
                 stock.priceHistory.removeFirst()
             }
         }
+
+        // Record portfolio value snapshot for Player Data history (capped at 500 entries)
+        GameState.portfolioValueHistory.add(GameState.totalPortfolioValue())
+        if (GameState.portfolioValueHistory.size > 500) {
+            GameState.portfolioValueHistory.removeAt(0)
+        }
+
+        // Track biggest single-share profit (unrealized, without selling)
+        for (stock in GameState.stocks) {
+            if (stock.sharesOwned > 0) {
+                val profitPerShare = stock.currentPrice - stock.averageBuyPrice
+                if (profitPerShare > GameState.biggestSingleShareProfit) {
+                    GameState.biggestSingleShareProfit = profitPerShare
+                }
+            }
+        }
+
         notifyListeners()
     }
 

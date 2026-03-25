@@ -7,6 +7,12 @@ object GameState {
     var cash: Double = STARTING_CASH
     var daysPassed: Int = 0
 
+    // Player Data: all-time portfolio value snapshots (sorted descending when displayed)
+    val portfolioValueHistory: MutableList<Double> = mutableListOf()
+
+    // Player Data: biggest profit on a single share ever recorded (price - avgBuy)
+    var biggestSingleShareProfit: Double = 0.0
+
     val stocks: List<Stock> = listOf(
         Stock("APPL", "AppleCore Technologies", "Technology",   182.50, 180.00, volatility = 0.015),
         Stock("GOGL", "Goggle Systems",          "Technology",   142.80, 141.50, volatility = 0.018),
@@ -64,6 +70,8 @@ object GameState {
     fun reset() {
         cash = STARTING_CASH
         daysPassed = 0
+        portfolioValueHistory.clear()
+        biggestSingleShareProfit = 0.0
         for (stock in stocks) {
             stock.sharesOwned = 0
             stock.averageBuyPrice = 0.0

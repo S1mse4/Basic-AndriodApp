@@ -37,6 +37,8 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
     private lateinit var tvAvgBuy: TextView
     private lateinit var tvUnrealizedPnL: TextView
     private lateinit var tvAvailableCash: TextView
+    private lateinit var btnBuyAll: Button
+    private lateinit var btnSellAll: Button
 
     private var isBuyMode = true
     private val engine = StockMarketEngine.instance
@@ -70,6 +72,8 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
         tvAvgBuy = findViewById(R.id.tvAvgBuy)
         tvUnrealizedPnL = findViewById(R.id.tvUnrealizedPnL)
         tvAvailableCash = findViewById(R.id.tvAvailableCash)
+        btnBuyAll = findViewById(R.id.btnBuyAll)
+        btnSellAll = findViewById(R.id.btnSellAll)
 
         tabLayout.addTab(tabLayout.newTab().setText("BUY"))
         tabLayout.addTab(tabLayout.newTab().setText("SELL"))
@@ -93,6 +97,9 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
         })
 
         btnExecute.setOnClickListener { executeTransaction() }
+
+        btnBuyAll.setOnClickListener { executeBuyAll() }
+        btnSellAll.setOnClickListener { executeSellAll() }
 
         updateUI()
     }
@@ -215,6 +222,44 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
                 SellResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
                 SellResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun executeBuyAll() {
+        val stock = GameState.stocks.find { it.symbol == symbol } ?: return
+        val maxQty = (GameState.cash / stock.currentPrice).toInt()
+        if (maxQty <= 0) {
+            Toast.makeText(this, "Insufficient funds to buy any shares!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        when (GameState.buyStock(symbol, maxQty)) {
+            BuyResult.SUCCESS -> {
+                Toast.makeText(this, "Bought $maxQty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
+                etQuantity.setText("")
+                updateUI()
+            }
+            BuyResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Insufficient funds!", Toast.LENGTH_SHORT).show()
+            BuyResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            BuyResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun executeSellAll() {
+        val stock = GameState.stocks.find { it.symbol == symbol } ?: return
+        if (stock.sharesOwned <= 0) {
+            Toast.makeText(this, "No shares to sell!", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val qty = stock.sharesOwned
+        when (GameState.sellStock(symbol, qty)) {
+            SellResult.SUCCESS -> {
+                Toast.makeText(this, "Sold all $qty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
+                etQuantity.setText("")
+                updateUI()
+            }
+            SellResult.INSUFFICIENT_SHARES -> Toast.makeText(this, "Not enough shares owned!", Toast.LENGTH_SHORT).show()
+            SellResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            SellResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
         }
     }
 }
