@@ -24,7 +24,10 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var bottomNav: BottomNavigationView
     private lateinit var marketSection: android.view.View
     private lateinit var portfolioSection: android.view.View
+    private lateinit var playerSection: android.view.View
     private lateinit var tvEmptyPortfolio: TextView
+    private lateinit var tvBiggestProfit: TextView
+    private lateinit var tvPortfolioHistory: TextView
 
     private lateinit var stockAdapter: StockAdapter
     private lateinit var portfolioAdapter: PortfolioAdapter
@@ -45,7 +48,10 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         bottomNav = findViewById(R.id.bottomNav)
         marketSection = findViewById(R.id.marketSection)
         portfolioSection = findViewById(R.id.portfolioSection)
+        playerSection = findViewById(R.id.playerSection)
         tvEmptyPortfolio = findViewById(R.id.tvEmptyPortfolio)
+        tvBiggestProfit = findViewById(R.id.tvBiggestProfit)
+        tvPortfolioHistory = findViewById(R.id.tvPortfolioHistory)
 
         stockAdapter = StockAdapter(GameState.stocks) { stock ->
             val intent = Intent(this, StockDetailActivity::class.java)
@@ -70,12 +76,21 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                 R.id.nav_market -> {
                     marketSection.visibility = android.view.View.VISIBLE
                     portfolioSection.visibility = android.view.View.GONE
+                    playerSection.visibility = android.view.View.GONE
                     true
                 }
                 R.id.nav_portfolio -> {
                     marketSection.visibility = android.view.View.GONE
                     portfolioSection.visibility = android.view.View.VISIBLE
+                    playerSection.visibility = android.view.View.GONE
                     refreshPortfolioList()
+                    true
+                }
+                R.id.nav_player -> {
+                    marketSection.visibility = android.view.View.GONE
+                    portfolioSection.visibility = android.view.View.GONE
+                    playerSection.visibility = android.view.View.VISIBLE
+                    refreshPlayerData()
                     true
                 }
                 else -> false
@@ -105,6 +120,9 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         if (portfolioSection.visibility == android.view.View.VISIBLE) {
             refreshPortfolioList()
         }
+        if (playerSection.visibility == android.view.View.VISIBLE) {
+            refreshPlayerData()
+        }
     }
 
     private fun updateHeader() {
@@ -125,6 +143,23 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         val holdings = GameState.stocks.filter { it.sharesOwned > 0 }
         portfolioAdapter.updateHoldings(holdings)
         tvEmptyPortfolio.visibility = if (holdings.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+    }
+
+    private fun refreshPlayerData() {
+        val profit = GameState.biggestSingleShareProfit
+        val sign = if (profit >= 0) "+" else ""
+        tvBiggestProfit.text = "$sign$${"%.2f".format(profit)}"
+        tvBiggestProfit.setTextColor(getColor(if (profit >= 0) R.color.stock_green else R.color.stock_red))
+
+        val history = GameState.portfolioValueHistory
+        if (history.isEmpty()) {
+            tvPortfolioHistory.text = "No data yet — values are recorded each update."
+        } else {
+            val sorted = history.sortedDescending()
+            tvPortfolioHistory.text = sorted
+                .mapIndexed { i, v -> "#${i + 1}  $${"%.2f".format(v)}" }
+                .joinToString("\n")
+        }
     }
 
     override fun onDestroy() {
