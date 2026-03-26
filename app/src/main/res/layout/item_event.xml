@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@color/bg_card"
+    android:padding="12dp"
+    android:layout_marginTop="1dp">
+
+    <!-- Left column: day label, title, description, affected stocks -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvEventDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Day 0"
+            android:textColor="@color/text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:letterSpacing="0.08" />
+
+        <TextView
+            android:id="@+id/tvEventTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Title"
+            android:textColor="@color/text_primary"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/tvEventDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event description here"
+            android:textColor="@color/text_secondary"
+            android:textSize="12sp"
+            android:layout_marginTop="2dp" />
+
+        <!-- Affected stock symbols shown in accent blue -->
+        <TextView
+            android:id="@+id/tvEventAffected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="APPL"
+            android:textColor="@color/accent_blue"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Right column: price impact percentage -->
+    <TextView
+        android:id="@+id/tvEventImpact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="+5.0%"
+        android:textColor="@color/stock_green"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:gravity="end"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="8dp"
+        android:minWidth="56dp" />
+
+</LinearLayout>
