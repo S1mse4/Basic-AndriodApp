@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/bg_card"
-    android:padding="12dp"
+    android:padding="@dimen/padding_item"
     android:layout_marginTop="1dp">
 
     <!-- Left column: day label, title, description, affected stocks -->
@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:text="Day 0"
             android:textColor="@color/text_secondary"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_size_micro"
             android:textStyle="bold"
             android:textAllCaps="true"
             android:letterSpacing="0.08" />
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:text="Event Title"
             android:textColor="@color/text_primary"
-            android:textSize="14sp"
+            android:textSize="@dimen/text_size_body_small"
             android:textStyle="bold"
             android:layout_marginTop="2dp" />
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:text="Event description here"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:layout_marginTop="2dp" />
 
         <!-- Affected stock symbols shown in accent blue -->
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:text="APPL"
             android:textColor="@color/accent_blue"
-            android:textSize="11sp"
+            android:textSize="@dimen/text_size_micro"
             android:textStyle="bold"
             android:layout_marginTop="4dp" />
 
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:text="+5.0%"
         android:textColor="@color/stock_green"
-        android:textSize="16sp"
+        android:textSize="@dimen/text_size_body"
         android:textStyle="bold"
         android:gravity="end"
         android:layout_gravity="center_vertical"

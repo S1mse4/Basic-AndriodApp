@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:background="@color/bg_card"
-    android:padding="14dp"
+    android:padding="@dimen/padding_item_large"
     android:layout_marginBottom="2dp">
 
     <!-- Left: Symbol and Name -->
@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             android:text="APPL"
             android:textColor="@color/text_primary"
-            android:textSize="17sp"
+            android:textSize="@dimen/text_size_body_large"
             android:textStyle="bold" />
 
         <TextView
@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:text="AppleCore Technologies"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:textStyle="bold" />
 
         <TextView
@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:text="10 shares"
             android:textColor="@color/accent_blue"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
             android:layout_marginTop="2dp" />
     </LinearLayout>
@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:text="$1,825.00"
             android:textColor="@color/text_primary"
-            android:textSize="16sp"
+            android:textSize="@dimen/text_size_body"
             android:textStyle="bold" />
 
         <TextView
@@ -67,7 +67,7 @@
             android:layout_height="wrap_content"
             android:text="Avg: $180.00"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:textStyle="bold" />
 
         <TextView
@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:text="+$25.00 (+1.38%)"
             android:textColor="@color/stock_green"
-            android:textSize="12sp"
+            android:textSize="@dimen/text_size_small"
             android:textStyle="bold"
             android:layout_marginTop="2dp" />
     </LinearLayout>

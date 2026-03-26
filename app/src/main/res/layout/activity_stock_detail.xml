@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/bg_card"
-            android:padding="20dp">
+            android:padding="@dimen/padding_header">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                         android:layout_height="wrap_content"
                         android:text="APPL"
                         android:textColor="@color/text_primary"
-                        android:textSize="28sp"
+                        android:textSize="@dimen/text_size_headline"
                         android:textStyle="bold" />
 
                     <TextView
@@ -48,7 +48,7 @@
                         android:layout_height="wrap_content"
                         android:text="AppleCore Technologies"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:textStyle="bold" />
 
                     <TextView
@@ -57,7 +57,7 @@
                         android:layout_height="wrap_content"
                         android:text="Technology"
                         android:textColor="@color/accent_blue"
-                        android:textSize="12sp"
+                        android:textSize="@dimen/text_size_small"
                         android:textStyle="bold"
                         android:layout_marginTop="2dp" />
                 </LinearLayout>
@@ -74,7 +74,7 @@
                         android:layout_height="wrap_content"
                         android:text="$182.50"
                         android:textColor="@color/stock_green"
-                        android:textSize="28sp"
+                        android:textSize="@dimen/text_size_headline"
                         android:textStyle="bold" />
 
                     <TextView
@@ -83,7 +83,7 @@
                         android:layout_height="wrap_content"
                         android:text="+1.20 (+0.66%)"
                         android:textColor="@color/stock_green"
-                        android:textSize="14sp"
+                        android:textSize="@dimen/text_size_body_small"
                         android:textStyle="bold"
                         android:gravity="end" />
                 </LinearLayout>
@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:text="H: $185.00  L: $179.00"
                 android:textColor="@color/text_secondary"
-                android:textSize="12sp"
+                android:textSize="@dimen/text_size_small"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
@@ -104,7 +104,7 @@
         <com.example.basicandroidapp.ui.PriceChartView
             android:id="@+id/priceChart"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="@dimen/chart_height"
             android:background="@color/bg_surface"
             android:paddingLeft="8dp"
             android:paddingRight="8dp" />
@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:background="@color/bg_card"
-            android:padding="16dp"
+            android:padding="@dimen/padding_card"
             android:layout_marginTop="8dp">
 
             <LinearLayout
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:text="Owned: 0 shares"
                     android:textColor="@color/text_primary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold" />
 
                 <TextView
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:text="Avg Buy: —"
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp" />
             </LinearLayout>
@@ -157,7 +157,7 @@
                     android:layout_height="wrap_content"
                     android:text="Cash: $10,000.00"
                     android:textColor="@color/text_primary"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold" />
 
                 <TextView
@@ -166,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:text="P&amp;L: —"
                     android:textColor="@color/text_secondary"
-                    android:textSize="13sp"
+                    android:textSize="@dimen/text_size_caption"
                     android:textStyle="bold"
                     android:layout_marginTop="4dp" />
             </LinearLayout>
@@ -178,7 +178,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="@color/bg_card"
-            android:padding="16dp"
+            android:padding="@dimen/padding_card"
             android:layout_marginTop="8dp">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:textColor="@color/text_primary"
-                    android:textSize="18sp" />
+                    android:textSize="@dimen/text_size_title" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -205,7 +205,7 @@
                 android:layout_height="wrap_content"
                 android:text="Enter quantity to see cost"
                 android:textColor="@color/text_secondary"
-                android:textSize="13sp"
+                android:textSize="@dimen/text_size_caption"
                 android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp" />
@@ -219,11 +219,11 @@
                 <Button
                     android:id="@+id/btnExecute"
                     android:layout_width="0dp"
-                    android:layout_height="52dp"
+                    android:layout_height="@dimen/button_height_primary"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:text="BUY"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/text_size_title"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:backgroundTint="@color/stock_green"
@@ -232,11 +232,11 @@
                 <Button
                     android:id="@+id/btnSell"
                     android:layout_width="0dp"
-                    android:layout_height="52dp"
+                    android:layout_height="@dimen/button_height_primary"
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:text="SELL"
-                    android:textSize="18sp"
+                    android:textSize="@dimen/text_size_title"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:backgroundTint="@color/stock_red"
@@ -252,11 +252,11 @@
                 <Button
                     android:id="@+id/btnBuyAll"
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/button_height_secondary"
                     android:layout_weight="1"
                     android:layout_marginEnd="4dp"
                     android:text="BUY ALL"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:backgroundTint="@color/stock_green"
@@ -265,11 +265,11 @@
                 <Button
                     android:id="@+id/btnSellAll"
                     android:layout_width="0dp"
-                    android:layout_height="48dp"
+                    android:layout_height="@dimen/button_height_secondary"
                     android:layout_weight="1"
                     android:layout_marginStart="4dp"
                     android:text="SELL ALL"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_size_body_small"
                     android:textStyle="bold"
                     android:textColor="@color/text_primary"
                     android:backgroundTint="@color/stock_red"
