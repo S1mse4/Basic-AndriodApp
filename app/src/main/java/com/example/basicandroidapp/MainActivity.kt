@@ -71,6 +71,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var tvEmptyNews: TextView
 
     private val engine = StockMarketEngine.instance
+    private var currentTabId: Int = R.id.nav_market
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,47 +158,57 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_market -> {
+                    currentTabId = R.id.nav_market
                     marketSection.visibility = View.VISIBLE
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
+                    updateHeader()
                     true
                 }
                 R.id.nav_portfolio -> {
+                    currentTabId = R.id.nav_portfolio
                     marketSection.visibility = View.GONE
                     portfolioSection.visibility = View.VISIBLE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
                     refreshPortfolioList()
+                    updateHeader()
                     true
                 }
                 R.id.nav_bank -> {
+                    currentTabId = R.id.nav_bank
                     marketSection.visibility = View.GONE
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.VISIBLE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
                     refreshBankData()
+                    updateHeader()
                     true
                 }
                 R.id.nav_player -> {
+                    currentTabId = R.id.nav_player
                     marketSection.visibility = View.GONE
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.VISIBLE
                     newsSection.visibility = View.GONE
                     refreshPlayerData()
+                    updateHeader()
                     true
                 }
                 R.id.nav_news -> {
+                    currentTabId = R.id.nav_news
                     marketSection.visibility = View.GONE
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.VISIBLE
                     refreshEventsList()
+                    updateHeader()
                     true
                 }
                 else -> false
@@ -405,16 +416,36 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         }
     }
 
+    /** Formats [amount] with k/m abbreviations (e.g. $1.5k, $2.3m). */
+    private fun formatMoney(amount: Double): String {
+        val abs = kotlin.math.abs(amount)
+        val sign = if (amount < 0) "-" else ""
+        return when {
+            abs >= 1_000_000 -> "$sign$${"%.1f".format(abs / 1_000_000)}m"
+            abs >= 1_000 -> "$sign$${"%.1f".format(abs / 1_000)}k"
+            else -> "$sign$${"%.2f".format(abs)}"
+        }
+    }
+
+    /** Formats [amount] as a full decimal string with thousand separators (e.g. $10,000.00). */
+    private fun formatMoneyFull(amount: Double): String {
+        val sign = if (amount < 0) "-" else ""
+        return "$sign$${"%,.2f".format(kotlin.math.abs(amount))}"
+    }
+
     private fun updateHeader() {
         val total = GameState.totalPortfolioValue()
+        val cash = GameState.cash
         val holdings = GameState.holdingsValue()
         val pnl = total - GameState.STARTING_CASH
-        val sign = if (pnl >= 0) "+" else ""
+        val pnlSign = if (pnl >= 0) "+" else ""
 
-        tvTotalValue.text = "$${"%.2f".format(total)}"
-        tvCashBalance.text = "Cash: $${"%.2f".format(GameState.cash)}"
-        tvHoldingsValue.text = "Invested: $${"%.2f".format(holdings)}"
-        tvTotalChange.text = "P&L: $sign$${"%.2f".format(pnl)}"
+        val fmt: (Double) -> String = if (currentTabId == R.id.nav_bank) ::formatMoneyFull else ::formatMoney
+
+        tvTotalValue.text = "Cash: ${fmt(cash)}"
+        tvCashBalance.text = "Net Worth: ${fmt(total)}"
+        tvHoldingsValue.text = "Invested: ${fmt(holdings)}"
+        tvTotalChange.text = "P&L: $pnlSign${fmt(pnl)}"
         tvTotalChange.setTextColor(getColor(if (pnl >= 0) R.color.stock_green else R.color.stock_red))
         tvDayCounter.text = "Day ${GameState.daysPassed}"
     }
