@@ -70,6 +70,10 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var rvEvents: RecyclerView
     private lateinit var tvEmptyNews: TextView
 
+    // Settings views
+    private lateinit var settingsSection: View
+    private lateinit var btnResetProgress: Button
+
     private val engine = StockMarketEngine.instance
     private var currentTabId: Int = R.id.nav_market
 
@@ -113,6 +117,9 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         rvEvents = findViewById(R.id.rvEvents)
         tvEmptyNews = findViewById(R.id.tvEmptyNews)
 
+        settingsSection = findViewById(R.id.settingsSection)
+        btnResetProgress = findViewById(R.id.btnResetProgress)
+
         stockAdapter = StockAdapter(GameState.stocks) { stock ->
             val intent = Intent(this, StockDetailActivity::class.java)
             intent.putExtra(StockDetailActivity.EXTRA_SYMBOL, stock.symbol)
@@ -138,6 +145,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
         setupSortSpinner()
         setupBankButtons()
+        setupSettingsButtons()
 
         // Dynamically adjust section top margins to match the actual rendered header height.
         // This ensures the content below the sticky header is never obscured, regardless of
@@ -147,7 +155,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
             override fun onGlobalLayout() {
                 headerCard.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val headerHeight = headerCard.height
-                listOf(marketSection, portfolioSection, playerSection, bankSection, newsSection).forEach { section ->
+                listOf(marketSection, portfolioSection, playerSection, bankSection, newsSection, settingsSection).forEach { section ->
                     val params = section.layoutParams as ViewGroup.MarginLayoutParams
                     params.topMargin = headerHeight
                     section.layoutParams = params
@@ -164,6 +172,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
+                    settingsSection.visibility = View.GONE
                     updateHeader()
                     true
                 }
@@ -174,6 +183,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
+                    settingsSection.visibility = View.GONE
                     refreshPortfolioList()
                     updateHeader()
                     true
@@ -185,6 +195,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.VISIBLE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
+                    settingsSection.visibility = View.GONE
                     refreshBankData()
                     updateHeader()
                     true
@@ -196,6 +207,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.VISIBLE
                     newsSection.visibility = View.GONE
+                    settingsSection.visibility = View.GONE
                     refreshPlayerData()
                     updateHeader()
                     true
@@ -207,7 +219,19 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.VISIBLE
+                    settingsSection.visibility = View.GONE
                     refreshEventsList()
+                    updateHeader()
+                    true
+                }
+                R.id.nav_settings -> {
+                    currentTabId = R.id.nav_settings
+                    marketSection.visibility = View.GONE
+                    portfolioSection.visibility = View.GONE
+                    bankSection.visibility = View.GONE
+                    playerSection.visibility = View.GONE
+                    newsSection.visibility = View.GONE
+                    settingsSection.visibility = View.VISIBLE
                     updateHeader()
                     true
                 }
@@ -221,18 +245,16 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
     private fun setupSortSpinner() {
         val sortLabels = listOf("Price: Low → High", "Price: High → Low", "My Holdings First")
+        val sortModes = listOf(SortMode.PRICE_LOW_HIGH, SortMode.PRICE_HIGH_LOW, SortMode.OWNED_FIRST)
+        val defaultSortMode = SortMode.PRICE_HIGH_LOW
         val adapter = ArrayAdapter(this, R.layout.spinner_dropdown_item, sortLabels)
         adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerSort.adapter = adapter
+        spinnerSort.setSelection(sortModes.indexOf(defaultSortMode))
 
         spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, position: Int, id: Long) {
-                val mode = when (position) {
-                    0 -> SortMode.PRICE_LOW_HIGH
-                    1 -> SortMode.PRICE_HIGH_LOW
-                    else -> SortMode.OWNED_FIRST
-                }
-                stockAdapter.setSortMode(mode)
+                stockAdapter.setSortMode(sortModes[position])
             }
             override fun onNothingSelected(parent: AdapterView<*>) {}
         }
@@ -491,6 +513,26 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         val events = GameState.eventHistory.toList()
         eventAdapter.updateEvents(events)
         tvEmptyNews.visibility = if (events.isEmpty()) View.VISIBLE else View.GONE
+    }
+
+    private fun setupSettingsButtons() {
+        btnResetProgress.setOnClickListener {
+            androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete All Progress")
+                .setMessage("Are you sure you want to reset all progress? This cannot be undone.")
+                .setPositiveButton("RESET") { _, _ ->
+                    GameState.reset()
+                    stockAdapter.notifyPricesChanged()
+                    refreshPortfolioList()
+                    refreshBankData()
+                    refreshPlayerData()
+                    refreshEventsList()
+                    updateHeader()
+                    Toast.makeText(this, "Progress reset. Starting over with \$10,000.", Toast.LENGTH_LONG).show()
+                }
+                .setNegativeButton("CANCEL", null)
+                .show()
+        }
     }
 
     override fun onDestroy() {
