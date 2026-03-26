@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.basicandroidapp.engine.StockMarketEngine
 import com.example.basicandroidapp.model.BankResult
 import com.example.basicandroidapp.model.GameState
+import com.example.basicandroidapp.model.MarketEvent
 import com.example.basicandroidapp.ui.CombinedStockChartView
+import com.example.basicandroidapp.ui.EventAdapter
 import com.example.basicandroidapp.ui.PortfolioAdapter
 import com.example.basicandroidapp.ui.SortMode
 import com.example.basicandroidapp.ui.StockAdapter
@@ -56,6 +58,12 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
     private lateinit var stockAdapter: StockAdapter
     private lateinit var portfolioAdapter: PortfolioAdapter
+    private lateinit var eventAdapter: EventAdapter
+
+    // News / Events feed views
+    private lateinit var newsSection: View
+    private lateinit var rvEvents: RecyclerView
+    private lateinit var tvEmptyNews: TextView
 
     private val engine = StockMarketEngine.instance
 
@@ -92,6 +100,10 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         btnBorrow = findViewById(R.id.btnBorrow)
         btnRepay = findViewById(R.id.btnRepay)
 
+        newsSection = findViewById(R.id.newsSection)
+        rvEvents = findViewById(R.id.rvEvents)
+        tvEmptyNews = findViewById(R.id.tvEmptyNews)
+
         stockAdapter = StockAdapter(GameState.stocks) { stock ->
             val intent = Intent(this, StockDetailActivity::class.java)
             intent.putExtra(StockDetailActivity.EXTRA_SYMBOL, stock.symbol)
@@ -104,11 +116,16 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
             startActivity(intent)
         }
 
+        eventAdapter = EventAdapter(GameState.eventHistory.toList())
+
         rvMarket.layoutManager = LinearLayoutManager(this)
         rvMarket.adapter = stockAdapter
 
         rvPortfolio.layoutManager = LinearLayoutManager(this)
         rvPortfolio.adapter = portfolioAdapter
+
+        rvEvents.layoutManager = LinearLayoutManager(this)
+        rvEvents.adapter = eventAdapter
 
         setupSortSpinner()
         setupBankButtons()
@@ -120,6 +137,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
+                    newsSection.visibility = View.GONE
                     true
                 }
                 R.id.nav_portfolio -> {
@@ -127,6 +145,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     portfolioSection.visibility = View.VISIBLE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
+                    newsSection.visibility = View.GONE
                     refreshPortfolioList()
                     true
                 }
@@ -135,6 +154,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.VISIBLE
                     playerSection.visibility = View.GONE
+                    newsSection.visibility = View.GONE
                     refreshBankData()
                     true
                 }
@@ -143,7 +163,17 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     portfolioSection.visibility = View.GONE
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.VISIBLE
+                    newsSection.visibility = View.GONE
                     refreshPlayerData()
+                    true
+                }
+                R.id.nav_news -> {
+                    marketSection.visibility = View.GONE
+                    portfolioSection.visibility = View.GONE
+                    bankSection.visibility = View.GONE
+                    playerSection.visibility = View.GONE
+                    newsSection.visibility = View.VISIBLE
+                    refreshEventsList()
                     true
                 }
                 else -> false
@@ -289,6 +319,30 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         if (playerSection.visibility == View.VISIBLE) {
             refreshPlayerData()
         }
+        if (newsSection.visibility == View.VISIBLE) {
+            refreshEventsList()
+        }
+    }
+
+    /** Called by the engine each time a market event fires. */
+    override fun onMarketEvent(event: MarketEvent) {
+        // Show a brief toast so the player notices the event
+        val sign = if (event.impactPercent >= 0) "+" else ""
+        val affected = when (event.eventType) {
+            MarketEvent.EventType.MARKET_WIDE -> "All Markets"
+            MarketEvent.EventType.SECTOR_WIDE -> event.affectedSymbols.joinToString(", ")
+            MarketEvent.EventType.COMPANY_SPECIFIC -> event.affectedSymbols.firstOrNull() ?: ""
+        }
+        Toast.makeText(
+            this,
+            "📰 ${event.title}: $affected $sign${"%.1f".format(event.impactPercent)}%",
+            Toast.LENGTH_LONG
+        ).show()
+
+        // If the News tab is open, refresh it immediately
+        if (newsSection.visibility == View.VISIBLE) {
+            refreshEventsList()
+        }
     }
 
     private fun updateHeader() {
@@ -338,6 +392,12 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         } else {
             tvPortfolioHistory.text = "$${"%.2f".format(highest)}"
         }
+    }
+
+    private fun refreshEventsList() {
+        val events = GameState.eventHistory.toList()
+        eventAdapter.updateEvents(events)
+        tvEmptyNews.visibility = if (events.isEmpty()) View.VISIBLE else View.GONE
     }
 
     override fun onDestroy() {

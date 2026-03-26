@@ -24,6 +24,9 @@ object GameState {
     // Player Data: biggest profit on a single share ever recorded (price - avgBuy)
     var biggestSingleShareProfit: Double = 0.0
 
+    // Market Events: list of the most recent events (newest first, capped at 20)
+    val eventHistory: MutableList<MarketEvent> = mutableListOf()
+
     val stocks: List<Stock> = listOf(
         Stock("APPL", "AppleCore Technologies", "Technology",   182.50, 180.00, volatility = 0.015),
         Stock("GOGL", "Goggle Systems",          "Technology",   142.80, 141.50, volatility = 0.018),
@@ -119,6 +122,7 @@ object GameState {
         portfolioValueHistory.clear()
         highestPortfolioValue = STARTING_CASH
         biggestSingleShareProfit = 0.0
+        eventHistory.clear()
         for (stock in stocks) {
             stock.sharesOwned = 0
             stock.averageBuyPrice = 0.0

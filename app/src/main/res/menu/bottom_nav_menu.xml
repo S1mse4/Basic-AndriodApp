@@ -16,4 +16,8 @@
         android:id="@+id/nav_player"
         android:icon="@drawable/ic_player"
         android:title="Player" />
+    <item
+        android:id="@+id/nav_news"
+        android:icon="@drawable/ic_news"
+        android:title="News" />
 </menu>
