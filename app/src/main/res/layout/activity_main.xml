@@ -26,30 +26,39 @@
             android:textAllCaps="true"
             android:letterSpacing="0.1" />
 
-        <TextView
-            android:id="@+id/tvTotalValue"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="$10,000.00"
-            android:textColor="@color/text_primary"
-            android:textSize="36sp"
-            android:textStyle="bold"
-            android:layout_marginTop="4dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="4dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvTotalValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$10,000.00"
+                android:textColor="@color/text_primary"
+                android:textSize="44sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvCashBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cash: $10,000.00"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:gravity="end" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp">
-
-            <TextView
-                android:id="@+id/tvCashBalance"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Cash: $10,000.00"
-                android:textColor="@color/text_secondary"
-                android:textSize="13sp" />
+            android:layout_marginTop="6dp">
 
             <TextView
                 android:id="@+id/tvHoldingsValue"
@@ -58,8 +67,7 @@
                 android:layout_weight="1"
                 android:text="Invested: $0.00"
                 android:textColor="@color/text_secondary"
-                android:textSize="13sp"
-                android:gravity="center" />
+                android:textSize="13sp" />
 
             <TextView
                 android:id="@+id/tvTotalChange"
@@ -78,7 +86,7 @@
         android:id="@+id/marketSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="148dp"
         android:layout_marginBottom="56dp"
         android:orientation="vertical">
 
@@ -107,8 +115,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:background="@color/bg_surface"
-                android:popupBackground="@color/bg_surface" />
+                android:background="@color/spinner_popup_bg"
+                android:popupBackground="@color/spinner_popup_bg" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -126,7 +134,7 @@
         android:id="@+id/portfolioSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="148dp"
         android:layout_marginBottom="56dp"
         android:orientation="vertical"
         android:visibility="gone">
@@ -158,7 +166,7 @@
         android:id="@+id/playerSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="148dp"
         android:layout_marginBottom="56dp"
         android:visibility="gone">
 
@@ -250,7 +258,7 @@
         android:id="@+id/bankSection"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="120dp"
+        android:layout_marginTop="148dp"
         android:layout_marginBottom="56dp"
         android:visibility="gone">
 
@@ -334,6 +342,15 @@
                         android:backgroundTint="@color/accent_blue"
                         android:layout_marginStart="4dp" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnWithdrawAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="WITHDRAW ALL"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/accent_blue"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
             <!-- Debt Card -->
