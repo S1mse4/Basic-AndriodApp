@@ -443,10 +443,19 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         val pnl = total - GameState.STARTING_CASH
         val pnlSign = if (pnl >= 0) "+" else ""
 
-        val fmt: (Double) -> String = if (currentTabId == R.id.nav_bank) ::formatMoneyFull else ::formatMoney
+        val inBankMode = currentTabId == R.id.nav_bank
+        val fmt: (Double) -> String = if (inBankMode) ::formatMoneyFull else ::formatMoney
 
         tvTotalValue.text = "Cash: ${fmt(cash)}"
-        tvCashBalance.text = "Net Worth: ${fmt(total)}"
+        tvTotalValue.gravity = if (inBankMode) android.view.Gravity.CENTER else android.view.Gravity.START
+
+        if (inBankMode) {
+            tvCashBalance.visibility = View.GONE
+        } else {
+            tvCashBalance.visibility = View.VISIBLE
+            tvCashBalance.text = "Net Worth: ${fmt(total)}"
+        }
+
         tvHoldingsValue.text = "Invested: ${fmt(holdings)}"
         tvTotalChange.text = "P&L: $pnlSign${fmt(pnl)}"
         tvTotalChange.setTextColor(getColor(if (pnl >= 0) R.color.stock_green else R.color.stock_red))
