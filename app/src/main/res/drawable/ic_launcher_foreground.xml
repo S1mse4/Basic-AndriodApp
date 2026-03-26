@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Rising stock chart line (from bottom-left upward to top-right) -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M18,80 L34,62 L50,68 L66,44 L82,28 L90,18" />
+
+    <!-- Arrow head at top-right to show upward trend -->
+    <path
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="5"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M76,18 L90,18 L90,32" />
+
+    <!-- Dot at current price tip -->
+    <path
+        android:fillColor="#3FB950"
+        android:pathData="M90,18 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0" />
+
+    <!-- X-axis baseline -->
+    <path
+        android:strokeColor="#8B949E"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M14,88 L94,88" />
+
+    <!-- Y-axis -->
+    <path
+        android:strokeColor="#8B949E"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:fillColor="@android:color/transparent"
+        android:pathData="M14,88 L14,16" />
+
+</vector>

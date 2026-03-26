@@ -48,7 +48,8 @@
                         android:layout_height="wrap_content"
                         android:text="AppleCore Technologies"
                         android:textColor="@color/text_secondary"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/tvDetailSector"
@@ -57,6 +58,7 @@
                         android:text="Technology"
                         android:textColor="@color/accent_blue"
                         android:textSize="12sp"
+                        android:textStyle="bold"
                         android:layout_marginTop="2dp" />
                 </LinearLayout>
 
@@ -82,6 +84,7 @@
                         android:text="+1.20 (+0.66%)"
                         android:textColor="@color/stock_green"
                         android:textSize="14sp"
+                        android:textStyle="bold"
                         android:gravity="end" />
                 </LinearLayout>
             </LinearLayout>
@@ -93,6 +96,7 @@
                 android:text="H: $185.00  L: $179.00"
                 android:textColor="@color/text_secondary"
                 android:textSize="12sp"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp" />
         </LinearLayout>
 
@@ -136,6 +140,7 @@
                     android:text="Avg Buy: —"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="4dp" />
             </LinearLayout>
 
@@ -162,6 +167,7 @@
                     android:text="P&amp;L: —"
                     android:textColor="@color/text_secondary"
                     android:textSize="13sp"
+                    android:textStyle="bold"
                     android:layout_marginTop="4dp" />
             </LinearLayout>
         </LinearLayout>
@@ -200,6 +206,7 @@
                 android:text="Enter quantity to see cost"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp"
+                android:textStyle="bold"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="12dp" />
 
