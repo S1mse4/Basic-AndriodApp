@@ -6,4 +6,5 @@
     android:padding="14dp"
     android:textColor="@color/spinner_popup_text"
     android:textSize="14sp"
+    android:textStyle="bold"
     android:background="@color/spinner_popup_bg" />

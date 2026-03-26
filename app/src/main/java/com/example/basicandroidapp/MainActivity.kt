@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.basicandroidapp.engine.StockMarketEngine
 import com.example.basicandroidapp.model.BankResult
 import com.example.basicandroidapp.model.GameState
+import com.example.basicandroidapp.ui.CombinedStockChartView
 import com.example.basicandroidapp.ui.PortfolioAdapter
 import com.example.basicandroidapp.ui.SortMode
 import com.example.basicandroidapp.ui.StockAdapter
@@ -39,6 +40,8 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var tvBiggestProfit: TextView
     private lateinit var tvPortfolioHistory: TextView
     private lateinit var spinnerSort: Spinner
+    private lateinit var combinedChart: CombinedStockChartView
+    private lateinit var combinedChartSection: View
 
     // Bank views
     private lateinit var tvBankDeposit: TextView
@@ -76,6 +79,8 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         tvBiggestProfit = findViewById(R.id.tvBiggestProfit)
         tvPortfolioHistory = findViewById(R.id.tvPortfolioHistory)
         spinnerSort = findViewById(R.id.spinnerSort)
+        combinedChart = findViewById(R.id.combinedChart)
+        combinedChartSection = findViewById(R.id.combinedChartSection)
 
         tvBankDeposit = findViewById(R.id.tvBankDeposit)
         tvBankDebt = findViewById(R.id.tvBankDebt)
@@ -304,6 +309,16 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         val holdings = GameState.stocks.filter { it.sharesOwned > 0 }
         portfolioAdapter.updateHoldings(holdings)
         tvEmptyPortfolio.visibility = if (holdings.isEmpty()) View.VISIBLE else View.GONE
+
+        if (holdings.isNotEmpty()) {
+            val seriesData = holdings.mapIndexed { idx, stock ->
+                stock to CombinedStockChartView.SERIES_COLORS[idx % CombinedStockChartView.SERIES_COLORS.size]
+            }
+            combinedChart.series = seriesData
+            combinedChartSection.visibility = View.VISIBLE
+        } else {
+            combinedChartSection.visibility = View.GONE
+        }
     }
 
     private fun refreshBankData() {

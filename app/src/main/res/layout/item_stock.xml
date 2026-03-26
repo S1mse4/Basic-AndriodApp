@@ -31,7 +31,8 @@
             android:layout_height="wrap_content"
             android:text="AppleCore Technologies"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSector"
@@ -40,6 +41,7 @@
             android:text="Technology"
             android:textColor="@color/accent_blue"
             android:textSize="11sp"
+            android:textStyle="bold"
             android:layout_marginTop="2dp" />
     </LinearLayout>
 
@@ -74,7 +76,8 @@
             android:layout_height="wrap_content"
             android:text="+0.66%"
             android:textColor="@color/stock_green"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
 </LinearLayout>
