@@ -385,6 +385,15 @@
                 </LinearLayout>
 
                 <Button
+                    android:id="@+id/btnDepositAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DEPOSIT ALL"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/stock_green"
+                    android:layout_marginTop="8dp" />
+
+                <Button
                     android:id="@+id/btnWithdrawAll"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -429,6 +438,15 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_size_small"
                     android:textStyle="bold"
+                    android:layout_marginTop="2dp" />
+
+                <TextView
+                    android:id="@+id/tvDebtLimit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Debt limit: $50,000.00"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_small"
                     android:layout_marginTop="2dp"
                     android:layout_marginBottom="12dp" />
 
@@ -469,6 +487,15 @@
                         android:backgroundTint="@color/accent_blue"
                         android:layout_marginStart="4dp" />
                 </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnRepayAll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="REPAY ALL"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/accent_blue"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
 
         </LinearLayout>

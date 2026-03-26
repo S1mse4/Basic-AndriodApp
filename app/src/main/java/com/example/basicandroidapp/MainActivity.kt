@@ -50,13 +50,16 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     // Bank views
     private lateinit var tvBankDeposit: TextView
     private lateinit var tvBankDebt: TextView
+    private lateinit var tvDebtLimit: TextView
     private lateinit var etBankAmount: EditText
     private lateinit var etDebtAmount: EditText
     private lateinit var btnDeposit: Button
     private lateinit var btnWithdraw: Button
     private lateinit var btnWithdrawAll: Button
+    private lateinit var btnDepositAll: Button
     private lateinit var btnBorrow: Button
     private lateinit var btnRepay: Button
+    private lateinit var btnRepayAll: Button
 
     private lateinit var stockAdapter: StockAdapter
     private lateinit var portfolioAdapter: PortfolioAdapter
@@ -94,13 +97,16 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
         tvBankDeposit = findViewById(R.id.tvBankDeposit)
         tvBankDebt = findViewById(R.id.tvBankDebt)
+        tvDebtLimit = findViewById(R.id.tvDebtLimit)
         etBankAmount = findViewById(R.id.etBankAmount)
         etDebtAmount = findViewById(R.id.etDebtAmount)
         btnDeposit = findViewById(R.id.btnDeposit)
         btnWithdraw = findViewById(R.id.btnWithdraw)
         btnWithdrawAll = findViewById(R.id.btnWithdrawAll)
+        btnDepositAll = findViewById(R.id.btnDepositAll)
         btnBorrow = findViewById(R.id.btnBorrow)
         btnRepay = findViewById(R.id.btnRepay)
+        btnRepayAll = findViewById(R.id.btnRepayAll)
 
         newsSection = findViewById(R.id.newsSection)
         rvEvents = findViewById(R.id.rvEvents)
@@ -275,6 +281,23 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
             }
         }
 
+        btnDepositAll.setOnClickListener {
+            val amount = GameState.cash
+            if (amount <= 0) {
+                Toast.makeText(this, "No cash to deposit!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.depositToBank(amount)) {
+                BankResult.SUCCESS -> {
+                    etBankAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Deposited all $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
+                }
+                else -> Toast.makeText(this, "Deposit failed unexpectedly", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         btnBorrow.setOnClickListener {
             val amount = etDebtAmount.text.toString().toDoubleOrNull()
             if (amount == null || amount <= 0) {
@@ -288,6 +311,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     updateHeader()
                     Toast.makeText(this, "Borrowed $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
                 }
+                BankResult.DEBT_LIMIT_REACHED -> Toast.makeText(this, "Debt limit of $${"%.2f".format(GameState.MAX_DEBT)} reached!", Toast.LENGTH_SHORT).show()
                 else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
             }
         }
@@ -308,6 +332,24 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                 }
                 BankResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Not enough cash!", Toast.LENGTH_SHORT).show()
                 else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnRepayAll.setOnClickListener {
+            val debt = GameState.bankDebt
+            if (debt <= 0) {
+                Toast.makeText(this, "No debt to repay!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.repayDebt(debt)) {
+                BankResult.SUCCESS -> {
+                    etDebtAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Repaid all $${"%.2f".format(debt)}", Toast.LENGTH_SHORT).show()
+                }
+                BankResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Not enough cash to repay all debt!", Toast.LENGTH_SHORT).show()
+                else -> Toast.makeText(this, "Repayment failed unexpectedly", Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -394,8 +436,10 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     }
 
     private fun refreshBankData() {
+        val formattedDebt = "%.2f".format(GameState.bankDebt)
         tvBankDeposit.text = "$${"%.2f".format(GameState.bankDeposit)}"
-        tvBankDebt.text = "$${"%.2f".format(GameState.bankDebt)}"
+        tvBankDebt.text = "$$formattedDebt"
+        tvDebtLimit.text = "Debt limit: $${"%.2f".format(GameState.MAX_DEBT)} (used: $$formattedDebt)"
     }
 
     private fun refreshPlayerData() {
