@@ -316,25 +316,33 @@
                 android:padding="@dimen/padding_card"
                 android:layout_marginBottom="12dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="SAVINGS DEPOSIT"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/text_size_micro"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.1" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
 
-                <TextView
-                    android:id="@+id/tvBankDeposit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="$0.00"
-                    android:textColor="@color/stock_green"
-                    android:textSize="@dimen/text_size_headline"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="SAVINGS DEPOSIT"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_micro"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1" />
+
+                    <TextView
+                        android:id="@+id/tvBankDeposit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$0.00"
+                        android:textColor="@color/stock_green"
+                        android:textSize="@dimen/text_size_title"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -343,7 +351,6 @@
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_size_small"
                     android:textStyle="bold"
-                    android:layout_marginTop="2dp"
                     android:layout_marginBottom="12dp" />
 
                 <EditText
@@ -411,25 +418,33 @@
                 android:background="@color/bg_card"
                 android:padding="@dimen/padding_card">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="BANK DEBT"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="@dimen/text_size_micro"
-                    android:textStyle="bold"
-                    android:textAllCaps="true"
-                    android:letterSpacing="0.1" />
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="4dp">
 
-                <TextView
-                    android:id="@+id/tvBankDebt"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="$0.00"
-                    android:textColor="@color/stock_red"
-                    android:textSize="@dimen/text_size_headline"
-                    android:textStyle="bold"
-                    android:layout_marginTop="4dp" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BANK DEBT"
+                        android:textColor="@color/text_secondary"
+                        android:textSize="@dimen/text_size_micro"
+                        android:textStyle="bold"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1" />
+
+                    <TextView
+                        android:id="@+id/tvBankDebt"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="$0.00"
+                        android:textColor="@color/stock_red"
+                        android:textSize="@dimen/text_size_title"
+                        android:textStyle="bold" />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -437,8 +452,7 @@
                     android:text="Accrues 0.2% interest per market tick"
                     android:textColor="@color/text_secondary"
                     android:textSize="@dimen/text_size_small"
-                    android:textStyle="bold"
-                    android:layout_marginTop="2dp" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvDebtLimit"
@@ -566,6 +580,70 @@
             android:paddingBottom="8dp" />
 
     </LinearLayout>
+
+    <!-- Settings Section -->
+    <ScrollView
+        android:id="@+id/settingsSection"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_height"
+        android:layout_marginBottom="@dimen/bottom_nav_height"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_card">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@color/bg_card"
+                android:padding="@dimen/padding_card"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="DANGER ZONE"
+                    android:textColor="@color/stock_red"
+                    android:textSize="@dimen/text_size_micro"
+                    android:textStyle="bold"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Reset All Progress"
+                    android:textColor="@color/text_primary"
+                    android:textSize="@dimen/text_size_title"
+                    android:textStyle="bold"
+                    android:layout_marginTop="8dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="This will delete all progress including cash, stocks, bank data and player stats. You will start over with $10,000."
+                    android:textColor="@color/text_secondary"
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="16dp" />
+
+                <Button
+                    android:id="@+id/btnResetProgress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="DELETE ALL PROGRESS"
+                    android:textColor="@color/text_primary"
+                    android:backgroundTint="@color/stock_red" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
     <!-- Bottom Navigation -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

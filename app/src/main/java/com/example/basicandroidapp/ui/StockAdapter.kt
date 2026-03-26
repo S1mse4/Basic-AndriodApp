@@ -15,7 +15,7 @@ class StockAdapter(
     private val onStockClick: (Stock) -> Unit
 ) : RecyclerView.Adapter<StockAdapter.StockViewHolder>() {
 
-    private var sortMode: SortMode = SortMode.PRICE_LOW_HIGH
+    private var sortMode: SortMode = SortMode.PRICE_HIGH_LOW
     private val displayedStocks: MutableList<Stock> = mutableListOf()
 
     init {
