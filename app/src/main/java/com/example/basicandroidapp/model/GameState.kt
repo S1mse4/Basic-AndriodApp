@@ -8,6 +8,9 @@ object GameState {
     const val DEPOSIT_INTEREST_RATE = 0.001  // 0.1% per tick on deposits
     const val DEBT_INTEREST_RATE = 0.002     // 0.2% per tick on debt
 
+    // Maximum total debt a player can accumulate
+    const val MAX_DEBT = 50_000.0
+
     var cash: Double = STARTING_CASH
     var daysPassed: Int = 0
 
@@ -100,6 +103,7 @@ object GameState {
 
     fun borrowFromBank(amount: Double): BankResult {
         if (amount <= 0) return BankResult.INVALID_AMOUNT
+        if (bankDebt + amount > MAX_DEBT) return BankResult.DEBT_LIMIT_REACHED
         bankDebt += amount
         cash += amount
         return BankResult.SUCCESS
@@ -132,4 +136,4 @@ object GameState {
 
 enum class BuyResult { SUCCESS, INSUFFICIENT_FUNDS, STOCK_NOT_FOUND, INVALID_QUANTITY }
 enum class SellResult { SUCCESS, INSUFFICIENT_SHARES, STOCK_NOT_FOUND, INVALID_QUANTITY }
-enum class BankResult { SUCCESS, INSUFFICIENT_FUNDS, INSUFFICIENT_DEPOSIT, INVALID_AMOUNT }
+enum class BankResult { SUCCESS, INSUFFICIENT_FUNDS, INSUFFICIENT_DEPOSIT, INVALID_AMOUNT, DEBT_LIMIT_REACHED }
