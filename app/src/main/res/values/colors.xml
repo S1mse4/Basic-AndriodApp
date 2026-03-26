@@ -16,5 +16,9 @@
     <color name="stock_green">#3FB950</color>
     <color name="stock_red">#F85149</color>
     <color name="accent_blue">#58A6FF</color>
+
+    <!-- Spinner light popup -->
+    <color name="spinner_popup_bg">#E8ECF0</color>
+    <color name="spinner_popup_text">#1C2330</color>
 </resources>
 

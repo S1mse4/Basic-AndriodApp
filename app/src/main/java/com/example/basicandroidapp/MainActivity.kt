@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var etDebtAmount: EditText
     private lateinit var btnDeposit: Button
     private lateinit var btnWithdraw: Button
+    private lateinit var btnWithdrawAll: Button
     private lateinit var btnBorrow: Button
     private lateinit var btnRepay: Button
 
@@ -82,6 +83,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         etDebtAmount = findViewById(R.id.etDebtAmount)
         btnDeposit = findViewById(R.id.btnDeposit)
         btnWithdraw = findViewById(R.id.btnWithdraw)
+        btnWithdrawAll = findViewById(R.id.btnWithdrawAll)
         btnBorrow = findViewById(R.id.btnBorrow)
         btnRepay = findViewById(R.id.btnRepay)
 
@@ -149,8 +151,8 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
     private fun setupSortSpinner() {
         val sortLabels = listOf("Price: Low → High", "Price: High → Low", "My Holdings First")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, sortLabels)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        val adapter = ArrayAdapter(this, R.layout.spinner_dropdown_item, sortLabels)
+        adapter.setDropDownViewResource(R.layout.spinner_dropdown_item)
         spinnerSort.adapter = adapter
 
         spinnerSort.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -200,6 +202,23 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                 }
                 BankResult.INSUFFICIENT_DEPOSIT -> Toast.makeText(this, "Not enough in deposit!", Toast.LENGTH_SHORT).show()
                 else -> Toast.makeText(this, "Invalid amount", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        btnWithdrawAll.setOnClickListener {
+            val amount = GameState.bankDeposit
+            if (amount <= 0) {
+                Toast.makeText(this, "Nothing to withdraw!", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            when (GameState.withdrawFromBank(amount)) {
+                BankResult.SUCCESS -> {
+                    etBankAmount.setText("")
+                    refreshBankData()
+                    updateHeader()
+                    Toast.makeText(this, "Withdrew all $${"%.2f".format(amount)}", Toast.LENGTH_SHORT).show()
+                }
+                else -> Toast.makeText(this, "Withdrawal failed unexpectedly", Toast.LENGTH_SHORT).show()
             }
         }
 

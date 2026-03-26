@@ -13,7 +13,6 @@ import com.example.basicandroidapp.model.BuyResult
 import com.example.basicandroidapp.model.GameState
 import com.example.basicandroidapp.model.SellResult
 import com.example.basicandroidapp.ui.PriceChartView
-import com.google.android.material.tabs.TabLayout
 
 class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListener {
 
@@ -29,7 +28,6 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
     private lateinit var tvDetailChange: TextView
     private lateinit var tvDetailHighLow: TextView
     private lateinit var priceChart: PriceChartView
-    private lateinit var tabLayout: TabLayout
     private lateinit var etQuantity: EditText
     private lateinit var tvTransactionSummary: TextView
     private lateinit var btnExecute: Button
@@ -39,8 +37,8 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
     private lateinit var tvAvailableCash: TextView
     private lateinit var btnBuyAll: Button
     private lateinit var btnSellAll: Button
+    private lateinit var btnSell: Button
 
-    private var isBuyMode = true
     private val engine = StockMarketEngine.instance
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,7 +62,6 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
         tvDetailChange = findViewById(R.id.tvDetailChange)
         tvDetailHighLow = findViewById(R.id.tvDetailHighLow)
         priceChart = findViewById(R.id.priceChart)
-        tabLayout = findViewById(R.id.tabLayout)
         etQuantity = findViewById(R.id.etQuantity)
         tvTransactionSummary = findViewById(R.id.tvTransactionSummary)
         btnExecute = findViewById(R.id.btnExecute)
@@ -74,19 +71,7 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
         tvAvailableCash = findViewById(R.id.tvAvailableCash)
         btnBuyAll = findViewById(R.id.btnBuyAll)
         btnSellAll = findViewById(R.id.btnSellAll)
-
-        tabLayout.addTab(tabLayout.newTab().setText("BUY"))
-        tabLayout.addTab(tabLayout.newTab().setText("SELL"))
-
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-                isBuyMode = tab.position == 0
-                updateExecuteButton()
-                updateTransactionSummary()
-            }
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
+        btnSell = findViewById(R.id.btnSell)
 
         etQuantity.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -96,7 +81,8 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
             }
         })
 
-        btnExecute.setOnClickListener { executeTransaction() }
+        btnExecute.setOnClickListener { executeBuy() }
+        btnSell.setOnClickListener { executeSell() }
 
         btnBuyAll.setOnClickListener { executeBuyAll() }
         btnSellAll.setOnClickListener { executeSellAll() }
@@ -168,13 +154,6 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
         updateTransactionSummary()
     }
 
-    private fun updateExecuteButton() {
-        btnExecute.text = if (isBuyMode) "BUY" else "SELL"
-        btnExecute.backgroundTintList = android.content.res.ColorStateList.valueOf(
-            getColor(if (isBuyMode) R.color.stock_green else R.color.stock_red)
-        )
-    }
-
     private fun updateTransactionSummary() {
         val stock = GameState.stocks.find { it.symbol == symbol } ?: return
         val qty = etQuantity.text.toString().toIntOrNull() ?: 0
@@ -183,45 +162,46 @@ class StockDetailActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdat
             return
         }
         val total = stock.currentPrice * qty
-        if (isBuyMode) {
-            val affordable = (GameState.cash / stock.currentPrice).toInt()
-            tvTransactionSummary.text = "Cost: $%.2f\nMax you can buy: $affordable shares".format(total)
-        } else {
-            tvTransactionSummary.text = "Proceeds: $%.2f\nOwned: ${stock.sharesOwned} shares".format(total)
-        }
+        val affordable = (GameState.cash / stock.currentPrice).toInt()
+        val formattedTotal = "%.2f".format(total)
+        tvTransactionSummary.text = "Cost: \$$formattedTotal  ·  Max buy: $affordable\nProceeds: \$$formattedTotal  ·  Owned: ${stock.sharesOwned}"
     }
 
-    private fun executeTransaction() {
+    private fun executeBuy() {
         val qty = etQuantity.text.toString().toIntOrNull()
         if (qty == null || qty <= 0) {
             Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
             return
         }
+        when (GameState.buyStock(symbol, qty)) {
+            BuyResult.SUCCESS -> {
+                val stock = GameState.stocks.find { it.symbol == symbol }!!
+                Toast.makeText(this, "Bought $qty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
+                etQuantity.setText("")
+                updateUI()
+            }
+            BuyResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Insufficient funds!", Toast.LENGTH_SHORT).show()
+            BuyResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            BuyResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
+        }
+    }
 
-        if (isBuyMode) {
-            when (GameState.buyStock(symbol, qty)) {
-                BuyResult.SUCCESS -> {
-                    val stock = GameState.stocks.find { it.symbol == symbol }!!
-                    Toast.makeText(this, "Bought $qty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
-                    etQuantity.setText("")
-                    updateUI()
-                }
-                BuyResult.INSUFFICIENT_FUNDS -> Toast.makeText(this, "Insufficient funds!", Toast.LENGTH_SHORT).show()
-                BuyResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
-                BuyResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
+    private fun executeSell() {
+        val qty = etQuantity.text.toString().toIntOrNull()
+        if (qty == null || qty <= 0) {
+            Toast.makeText(this, "Please enter a valid quantity", Toast.LENGTH_SHORT).show()
+            return
+        }
+        when (GameState.sellStock(symbol, qty)) {
+            SellResult.SUCCESS -> {
+                val stock = GameState.stocks.find { it.symbol == symbol }!!
+                Toast.makeText(this, "Sold $qty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
+                etQuantity.setText("")
+                updateUI()
             }
-        } else {
-            when (GameState.sellStock(symbol, qty)) {
-                SellResult.SUCCESS -> {
-                    val stock = GameState.stocks.find { it.symbol == symbol }!!
-                    Toast.makeText(this, "Sold $qty shares of $symbol @ $%.2f".format(stock.currentPrice), Toast.LENGTH_SHORT).show()
-                    etQuantity.setText("")
-                    updateUI()
-                }
-                SellResult.INSUFFICIENT_SHARES -> Toast.makeText(this, "Not enough shares owned!", Toast.LENGTH_SHORT).show()
-                SellResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
-                SellResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
-            }
+            SellResult.INSUFFICIENT_SHARES -> Toast.makeText(this, "Not enough shares owned!", Toast.LENGTH_SHORT).show()
+            SellResult.INVALID_QUANTITY -> Toast.makeText(this, "Invalid quantity", Toast.LENGTH_SHORT).show()
+            SellResult.STOCK_NOT_FOUND -> Toast.makeText(this, "Stock not found", Toast.LENGTH_SHORT).show()
         }
     }
 
