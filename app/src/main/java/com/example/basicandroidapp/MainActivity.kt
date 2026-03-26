@@ -3,6 +3,8 @@ package com.example.basicandroidapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -129,6 +131,22 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
 
         setupSortSpinner()
         setupBankButtons()
+
+        // Dynamically adjust section top margins to match the actual rendered header height.
+        // This ensures the content below the sticky header is never obscured, regardless of
+        // screen density, font size, or tablet layout changes.
+        val headerCard = findViewById<View>(R.id.headerCard)
+        headerCard.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                headerCard.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                val headerHeight = headerCard.height
+                listOf(marketSection, portfolioSection, playerSection, bankSection, newsSection).forEach { section ->
+                    val params = section.layoutParams as ViewGroup.MarginLayoutParams
+                    params.topMargin = headerHeight
+                    section.layoutParams = params
+                }
+            }
+        })
 
         bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
