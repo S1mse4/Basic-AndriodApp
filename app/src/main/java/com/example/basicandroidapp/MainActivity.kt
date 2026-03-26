@@ -70,8 +70,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
     private lateinit var rvEvents: RecyclerView
     private lateinit var tvEmptyNews: TextView
 
-    // Settings views
-    private lateinit var settingsSection: View
     private lateinit var btnResetProgress: Button
 
     private val engine = StockMarketEngine.instance
@@ -117,7 +115,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
         rvEvents = findViewById(R.id.rvEvents)
         tvEmptyNews = findViewById(R.id.tvEmptyNews)
 
-        settingsSection = findViewById(R.id.settingsSection)
         btnResetProgress = findViewById(R.id.btnResetProgress)
 
         stockAdapter = StockAdapter(GameState.stocks) { stock ->
@@ -155,7 +152,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
             override fun onGlobalLayout() {
                 headerCard.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 val headerHeight = headerCard.height
-                listOf(marketSection, portfolioSection, playerSection, bankSection, newsSection, settingsSection).forEach { section ->
+                listOf(marketSection, portfolioSection, playerSection, bankSection, newsSection).forEach { section ->
                     val params = section.layoutParams as ViewGroup.MarginLayoutParams
                     params.topMargin = headerHeight
                     section.layoutParams = params
@@ -172,7 +169,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
-                    settingsSection.visibility = View.GONE
                     updateHeader()
                     true
                 }
@@ -183,7 +179,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
-                    settingsSection.visibility = View.GONE
                     refreshPortfolioList()
                     updateHeader()
                     true
@@ -195,7 +190,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.VISIBLE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.GONE
-                    settingsSection.visibility = View.GONE
                     refreshBankData()
                     updateHeader()
                     true
@@ -207,7 +201,6 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.VISIBLE
                     newsSection.visibility = View.GONE
-                    settingsSection.visibility = View.GONE
                     refreshPlayerData()
                     updateHeader()
                     true
@@ -219,19 +212,7 @@ class MainActivity : AppCompatActivity(), StockMarketEngine.OnPricesUpdatedListe
                     bankSection.visibility = View.GONE
                     playerSection.visibility = View.GONE
                     newsSection.visibility = View.VISIBLE
-                    settingsSection.visibility = View.GONE
                     refreshEventsList()
-                    updateHeader()
-                    true
-                }
-                R.id.nav_settings -> {
-                    currentTabId = R.id.nav_settings
-                    marketSection.visibility = View.GONE
-                    portfolioSection.visibility = View.GONE
-                    bankSection.visibility = View.GONE
-                    playerSection.visibility = View.GONE
-                    newsSection.visibility = View.GONE
-                    settingsSection.visibility = View.VISIBLE
                     updateHeader()
                     true
                 }
